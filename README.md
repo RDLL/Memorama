@@ -40,3 +40,13 @@ El sitio de OpenCV recomienda no instalar OpenCV en las carpetas del sistema, si
 #### Windows
 - Descargar [OpenCV](https://sourceforge.net/projects/opencvlibrary/files/opencv-win/)
 - Ejecutar como administrador
+
+## Ejecutar
+```
+cmake .
+
+make 
+
+./memorama
+```
+Esto desde Linux, mo se ha probado en Windows
