@@ -38,5 +38,5 @@ sudo make install
 El sitio de OpenCV recomienda no instalar OpenCV en las carpetas del sistema, sin embargo hay ocasiones en el que no instalarlas ahí hace que al usar cmake para generar los binarios no las pueda localizar
 
 #### Windows
-Descargar [OpenCV](https://sourceforge.net/projects/opencvlibrary/files/opencv-win/)
-Ejecutar como administrador
+- Descargar [OpenCV](https://sourceforge.net/projects/opencvlibrary/files/opencv-win/)
+- Ejecutar como administrador
