@@ -17,6 +17,8 @@ const string winName = "Display";
 class imagenes{
     string ruta = "/home/rdll/Memorama/imagenes/";
     string im[6] = {ruta + "bender.jpg",ruta + "bender2.jpg",ruta + "bender3.jpg",ruta + "bender.jpg",ruta + "bender2.jpg",ruta + "bender3.jpg"};
+    string im2[6] = {};
+    string im3[6] = {};
     string reverso = ruta + "bender4.jpg";
     Mat rev[6];
     Mat copia[6];
@@ -40,6 +42,7 @@ class imagenes{
         void cadena(int n);
         void reasignar();
         void generar();
+        void crear(int op);
         bool comparar();
         void copiar(int n);
         void copiar(Mat a[6]);
@@ -54,17 +57,32 @@ imagenes::imagenes(){
     intento = 3;
     generar();
     int i = 0;
-    unordered_set<int>::iterator itr;
-    for(itr = orden.begin(); itr != orden.end(); itr++){
-            image[i] = imread(im[(*itr)]);
-            rev[i] = imread(reverso);
-            ord[i] = (*itr);
-            band[i] = -1;
-            i++;
-    }
+    crear(1);
     cambiar();
     ventana();
     tapa();
+}
+
+void imagenes::crear(int op){
+    int i = 0;
+    unordered_set<int>::iterator itr;
+    for(itr = orden.begin(); itr != orden.end(); itr++){
+        if(op == 1){
+            image[i] = imread(im[(*itr)]);
+            rev[i] = imread(reverso);
+        }
+        if(op == 2){
+            image[i] = imread(im2[(*itr)]);
+            rev[i] = imread(reverso);
+        }
+        if(op == 3){
+            image[i] = imread(im3[(*itr)]);
+            rev[i] = imread(reverso);
+        }
+        ord[i] = (*itr);
+        band[i] = -1;
+        i++;
+    }
 }
 
 void imagenes::generar(){
@@ -246,10 +264,27 @@ static void onMouse(int event, int x, int y, int flags, void* param ){
 int main()
 {
     srand(time(NULL));
-    namedWindow(winName,WINDOW_AUTOSIZE);
-    setMouseCallback(winName,onMouse,NULL);
-    imagen.mostrar(0);
-    imagen.mostrar(1);
-    waitKey(0);
+    int op;
+    cout << "selecciona una categoría" << '\n';
+    cout << "1.- Artistas" << '\n';
+    cout << "2.- Cientificos" << '\n';
+    cout << "3.- Autores" << '\n';
+    cout << "4.- Salir" << '\n';
+    cin >> op;
+    while(op < 0 || op > 4){
+        cout << "selecciona una categoría" << '\n';
+        cout << "1.- Artistas" << '\n';
+        cout << "2.- Cientificos" << '\n';
+        cout << "3.- Autores" << '\n';
+        cout << "4.- Salir" << '\n';
+        cin >> op;
+    }
+    if(op!=4){
+        namedWindow(winName,WINDOW_AUTOSIZE);
+        setMouseCallback(winName,onMouse,NULL);
+        imagen.mostrar(0);
+        imagen.mostrar(1);
+        waitKey(0);
+    }
     return 0;
 }
