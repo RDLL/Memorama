@@ -21,13 +21,11 @@ class imagenes{
     Mat rev[6];
     Mat copia[6];
     Mat copia2[6];
-    Mat copia3[6];
-    Mat copia4[6];
     unordered_set <int> orden;
     int ord[6];
     int intento;
     int cont;
-    int band;
+    int band[6];
     int puntos;
     string primer,segundo;
     Mat image[6];
@@ -44,13 +42,13 @@ class imagenes{
         void generar();
         bool comparar();
         void copiar(int n);
+        void copiar(Mat a[6]);
         void destapar(int n);
         void clickOn( int event, int x, int y, int flags, void* param );
         int getIntento(){return intento;};
 };
 
 imagenes::imagenes(){
-    band = -1;
     cont = 0;
     puntos = 0;
     intento = 3;
@@ -61,6 +59,7 @@ imagenes::imagenes(){
             image[i] = imread(im[(*itr)]);
             rev[i] = imread(reverso);
             ord[i] = (*itr);
+            band[i] = -1;
             i++;
     }
     cambiar();
@@ -133,54 +132,24 @@ bool imagenes::comparar(){
         return 1;
 }
 
+void imagenes::copiar(Mat a[6]){
+    cout << "puntos: " << puntos << '\n';
+    for(int i = 0; i < 6; i++)
+        resize(a[i],copia[i],Size(300,200));
+}
+
 void imagenes::copiar(int n){
     for(int i = 0; i < 6; i++){
-        if(intento == 3){
-            if(i != n)
+            if(i != n && band[i] == -1 )
                 resize(rev[i],copia[i],Size(300,200));
             else
                 resize(image[i],copia[i],Size(300,200));
-            cout << "n" << '\n';
-        }
-        if(intento == 2){
-             if(i != n)
-                 resize(rev[i],copia2[i],Size(300,200));
-             else
-                 resize(image[i],copia2[i],Size(300,200));
-        }
-        if(intento == 1){
-             if(i != n)
-                 resize(rev[i],copia3[i],Size(300,200));
-             else
-                 resize(image[i],copia3[i],Size(300,200));
-        }
-        if(intento == 0){
-           destroyAllWindows();
-           cout << "Has perdido, suerte a la próxima\n";
-           cout << "Oprime cualquier tecla para salir";
-           cin.get();
-           destroyAllWindows();
-        }
-     }
-
-    cout << "intento: " << intento << '\n';
-}
-
-void imagenes::reasignar(){
-    for(int i = 0; i < 6; i++){
-        if(puntos == 1)
-            resize(copia[i],rev[i],Size(300,200));
-        if(puntos == 2)
-            resize(copia2[i],rev[i],Size(300,200));
-        if(puntos == 3)
-            resize(copia3[i],rev[i],Size(300,200));
     }
 }
 
 void imagenes::cadena(int n){
     if(cont == 1){
         primer.assign(im[ord[n]]);
-        band = n;
     }
     if(cont == 2){
         segundo.assign(im[ord[n]]);
@@ -192,13 +161,20 @@ void imagenes::cadena(int n){
                 //ord[band] = -1;
                 //ord[n] = -1;
                 puntos++;
+                if(puntos == 3){
+                    destroyAllWindows();
+                    cout << "Felcidades has ganado" << '\n';
+                    cout << "Oprime cualquier tecla para continuar";
+                    cin.get();
+                    return ;
+                }
         }else{
             intento--;
         }
         cont = 0;
     }
-    cout << "Cont: "<< cont << '\n';
-    cout << "Puntos: " << puntos << '\n';
+    //cout << "Cont: "<< cont << '\n';
+    //cout << "Puntos: " << puntos << '\n';
 }
 
 void imagenes::destapar(int n){
@@ -212,8 +188,6 @@ void imagenes::destapar(int n){
                     resize(copia[i],a[i],Size(300,200));
                 if(intento == 2)
                      resize(copia2[i],a[i],Size(300,200));
-                if(intento == 2)
-                     resize(copia3[i],a[i],Size(300,200));
             }else
                 resize(rev[i],a[i],Size(300,200));
         }
@@ -221,12 +195,15 @@ void imagenes::destapar(int n){
             resize(image[i],a[i],Size(300,200));
         if(j == n){
             cadena(j);
-            copiar(j);
+            band[i] = j;
+            copiar(j);            
         }
         j++;
     }
-    vector<Mat> b = {a[0],a[1],a[2]};
-    vector<Mat> c = {a[3],a[4],a[5]};
+    for (int i = 0; i < 6; i++)
+        copiar(a);
+    vector<Mat> b = {copia[0],copia[1],copia[2]};
+    vector<Mat> c = {copia[3],copia[4],copia[5]};
     Mat d;
     Mat e;
     hconcat(b,d);
@@ -235,7 +212,6 @@ void imagenes::destapar(int n){
     Mat aux; 
     vconcat(f,aux);
     imshow(winName,aux);
-    waitKey(0);
 }
 
 void imagenes::clickOn(int event,int x, int  y,int flags, void* param ){
